@@ -1,25 +1,64 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Dashboard from "./pages/Dashboard";
+import Users from "./pages/Users";
+import TimeSlots from "./pages/TimeSlots";
+import Bookings from "./pages/Bookings";
+import Login from "./pages/Login";
+
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+
+        {/* 🔥 DEFAULT → LOGIN */}
+        <Route path="/" element={<Navigate to="/login" />} />
+
+        {/* PUBLIC */}
+        <Route path="/login" element={<Login />} />
+
+        {/* PROTECTED */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/timeslots"
+          element={
+            <ProtectedRoute>
+              <TimeSlots />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/bookings"
+          element={
+            <ProtectedRoute>
+              <Bookings />
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
