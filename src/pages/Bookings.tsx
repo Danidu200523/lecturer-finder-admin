@@ -25,14 +25,14 @@ export default function Bookings() {
   }, []);
 
   const fetchData = async () => {
-    // 🔥 USERS MAP (FIXED)
+    
     const userSnap = await getDocs(collection(db, "users"));
     const userMap: any = {};
 
     userSnap.docs.forEach((doc) => {
       const data: any = doc.data();
 
-      // ✅ support BOTH doc.id and uid field
+      
       const uid = doc.id || data.uid;
 
       userMap[uid] = {
@@ -40,7 +40,7 @@ export default function Bookings() {
         photo: data.photoUrl,
       };
 
-      // 🔥 ALSO support when uid stored inside field
+      
       if (data.uid) {
         userMap[data.uid] = {
           name: data.name,
@@ -49,7 +49,7 @@ export default function Bookings() {
       }
     });
 
-    // 🔥 TIME SLOTS
+    
     const slotSnap = await getDocs(collection(db, "time_slots"));
 
     const list = slotSnap.docs.map((doc) => {
@@ -62,12 +62,12 @@ export default function Bookings() {
         id: doc.id,
         ...data,
 
-        // 👨‍🏫 lecturer
+        
         lecturerName: lecturer?.name || "Unknown",
         lecturerPhoto:
           lecturer?.photo || "https://via.placeholder.com/40",
 
-        // 👨‍🎓 student (FIXED)
+        
         studentName: data.bookedBy
           ? student?.name || "Unknown"
           : "-",
@@ -118,7 +118,7 @@ export default function Bookings() {
               {slots.map((slot) => (
                 <tr key={slot.id} className="border-b hover:bg-gray-50">
 
-                  {/* 👨‍🏫 LECTURER */}
+                  
                   <td className="p-2">
                     <div className="flex items-center gap-3">
                       <img
@@ -135,17 +135,17 @@ export default function Bookings() {
                     </div>
                   </td>
 
-                  {/* 📅 DATE */}
+                  
                   <td className="p-2">{slot.date}</td>
 
-                  {/* ⏰ TIME */}
+                  
                   <td className="p-2">
                     {slot.startTime && slot.endTime
                       ? `${slot.startTime} - ${slot.endTime}`
                       : "-"}
                   </td>
 
-                  {/* 📌 STATUS */}
+                  
                   <td className="p-2">
                     <span
                       className={`px-2 py-1 text-xs rounded ${getStatusColor(
@@ -156,7 +156,7 @@ export default function Bookings() {
                     </span>
                   </td>
 
-                  {/* 👨‍🎓 STUDENT */}
+                  
                   <td className="p-2">
                     {slot.bookedBy ? (
                       <div className="flex items-center gap-3">
