@@ -112,13 +112,13 @@ export default function Dashboard() {
     setRecentBookings(bookedList.slice(0, 5));
   };
 
-  // 🎨 NEW COLOR CARDS
+  
   const cards = [
     {
       title: "Users",
       value: stats.users,
       icon: <Users />,
-      color: "bg-blue-600",
+      color: "bg-green",
     },
     {
       title: "Lecturers",
@@ -136,7 +136,7 @@ export default function Dashboard() {
       title: "Slots",
       value: stats.slots,
       icon: <Calendar />,
-      color: "bg-green-600",
+      color: "bg-yellow",
     },
     {
       title: "Bookings",
