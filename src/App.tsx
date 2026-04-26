@@ -6,21 +6,27 @@ import Users from "./pages/Users";
 import TimeSlots from "./pages/TimeSlots";
 import Bookings from "./pages/Bookings";
 import Login from "./pages/Login";
+import Notifications from "./pages/Notifications";
+import LecturerStatusPage from "./pages/LecturerStatus";
 
 import ProtectedRoute from "./ProtectedRoute";
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/lecturer-status" element={<LecturerStatusPage />} />
+        <Route path="/notifications" element={<Notifications />} />
+        
 
-        {/* 🔥 DEFAULT → LOGIN */}
+        
         <Route path="/" element={<Navigate to="/login" />} />
 
-        {/* PUBLIC */}
+       
         <Route path="/login" element={<Login />} />
 
-        {/* PROTECTED */}
+        
         <Route
           path="/dashboard"
           element={
