@@ -69,18 +69,18 @@ export default function Dashboard() {
     slotSnap.docs.forEach((doc) => {
       const data: any = doc.data();
 
-      // STATUS COUNT
+      
       if (data.status === "available") available++;
       if (data.status === "booked") booked++;
       if (data.status === "cancelled") cancelled++;
 
-      // 🔥 NEW: COUNT ALL CREATED SLOTS PER DAY
+      
       if (data.date) {
         if (!dateMap[data.date]) dateMap[data.date] = 0;
         dateMap[data.date]++;
       }
 
-      // RECENT BOOKINGS
+      
       if (data.status === "booked") {
         bookedList.push({
           id: doc.id,
@@ -142,7 +142,7 @@ export default function Dashboard() {
       title: "Bookings",
       value: stats.bookings,
       icon: <BookOpen />,
-      color: "bg-red-500",
+      color: "bg-danger",
     },
   ];
 
@@ -156,7 +156,7 @@ export default function Dashboard() {
           Dashboard Overview 🚀
         </h1>
 
-        {/* STATS */}
+        
         <div className="grid grid-cols-5 gap-4 mb-6">
           {cards.map((c, i) => (
             <div
@@ -172,10 +172,10 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* CHART + STATUS */}
+        
         <div className="grid grid-cols-2 gap-6 mb-6">
 
-          {/* CHART */}
+          
           <div className="bg-white p-5 rounded-xl shadow">
             <h2 className="font-semibold mb-4 text-gray-700">
               📊 Time Slots Created per Day
@@ -195,7 +195,7 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </div>
 
-          {/* STATUS */}
+          
           <div className="bg-white p-5 rounded-xl shadow">
             <h2 className="font-semibold mb-4 text-gray-700">
               📌 Booking Status
@@ -212,14 +212,14 @@ export default function Dashboard() {
 
               <div className="flex justify-between">
                 <span>Booked</span>
-                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">
+                <span className="bg-blue-100 text-primary px-3 py-1 rounded-full font-semibold">
                   {bookingStats.booked}
                 </span>
               </div>
 
               <div className="flex justify-between">
                 <span>Cancelled</span>
-                <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full font-semibold">
+                <span className="bg-red-100 text-danger px-3 py-1 rounded-full font-semibold">
                   {bookingStats.cancelled}
                 </span>
               </div>
@@ -228,7 +228,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* RECENT BOOKINGS */}
+        
         <div className="bg-white p-5 rounded-xl shadow">
           <h2 className="font-semibold mb-4 text-gray-700">
             🕒 Recent Bookings
@@ -251,7 +251,7 @@ export default function Dashboard() {
                   <td className="p-2">{b.lecturerName}</td>
                   <td className="p-2">{b.date}</td>
                   <td className="p-2">
-                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                    <span className="bg-blue-100 text-primary px-2 py-1 rounded text-xs">
                       {b.status}
                     </span>
                   </td>

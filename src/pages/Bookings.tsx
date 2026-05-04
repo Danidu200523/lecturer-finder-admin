@@ -163,10 +163,9 @@ export default function Bookings() {
                         <img
                           src={slot.studentPhoto}
                           className="w-9 h-9 rounded-full object-cover"
-                          onError={(e: any) =>
-                            (e.target.src =
-                              "https://via.placeholder.com/40")
-                          }
+                          onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                            e.currentTarget.src = "https://via.placeholder.com/40";
+                          }}
                         />
                         <span className="font-medium">
                           {slot.studentName}

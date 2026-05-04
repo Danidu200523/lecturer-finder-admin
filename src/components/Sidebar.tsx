@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, Calendar, ClipboardList } from "lucide-react"; // ✅ added icon
+import { LayoutDashboard, Users, Calendar, ClipboardList } from "lucide-react"; 
+import { Bell } from "lucide-react";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -19,7 +20,7 @@ export default function Sidebar() {
         <h1 className="text-2xl font-bold tracking-wide">
           Admin Panel
         </h1>
-        <p className="text-sm text-blue-200">
+        <p className="text-sm text-primary-200">
           FindMyLecturer
         </p>
       </div>
@@ -42,10 +43,21 @@ export default function Sidebar() {
           Time Slots
         </Link>
 
-        {/* ✅ NEW BOOKINGS BUTTON */}
+        
         <Link to="/bookings" className={linkClass("/bookings")}>
           <ClipboardList size={20} />
           Bookings
+        </Link>
+
+        
+        <Link to="/notifications" className={linkClass("/notifications")}>
+          <Bell size={20} />
+          Notifications
+        </Link>
+
+        <Link to="/lecturer-status" className={linkClass("/lecturer-status")}>
+          <Users size={20} />
+          Lecturer Status
         </Link>
 
       </nav>
