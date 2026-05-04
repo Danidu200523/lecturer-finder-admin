@@ -27,7 +27,7 @@ export default function Notifications() {
   const [message, setMessage] = useState("");
   const [target, setTarget] = useState<"all" | "student" | "lecturer">("all");
 
-  // 🔥 FETCH
+  
   const fetchNotifications = async () => {
     const snap = await getDocs(collection(db, "notifications"));
 
@@ -43,7 +43,7 @@ export default function Notifications() {
     fetchNotifications();
   }, []);
 
-  // 🔥 SEND
+  
   const sendNotification = async () => {
     if (!title || !message) {
       alert("Please fill all fields");
@@ -67,7 +67,7 @@ export default function Notifications() {
     fetchNotifications();
   };
 
-  // 🔥 DELETE
+  
   const deleteNotification = async (id: string) => {
     if (!window.confirm("Delete this notification?")) return;
 
@@ -75,7 +75,7 @@ export default function Notifications() {
     fetchNotifications();
   };
 
-  // 🔥 FILTERS
+  
   const adminNotifications = notifications.filter(
     (n) => n.receiverId === "ALL"
   );
@@ -87,21 +87,21 @@ export default function Notifications() {
   return (
     <div className="flex h-screen overflow-hidden">
 
-      {/* 🔥 FIXED SIDEBAR */}
+      
       <div className="w-64 h-screen fixed left-0 top-0">
         <Sidebar />
       </div>
 
-      {/* 🔥 CONTENT */}
+      
       <div className="flex-1 ml-64 overflow-y-auto p-6 bg-gray-100">
 
-        {/* HEADER */}
+        
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Notifications</h1>
 
           <button
             onClick={() => setShowModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-primary text-white px-4 py-2 rounded"
           >
             + Send Notification
           </button>
@@ -133,14 +133,14 @@ export default function Notifications() {
                         {n.message || "No message"}
                       </p>
 
-                      <p className="text-xs text-blue-500 mt-1">
+                      <p className="text-xs text-primary mt-1">
                         {role} • {time}
                       </p>
                     </div>
 
                     <button
                       onClick={() => deleteNotification(n.id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-danger hover:text-dangerLight"
                     >
                       Delete
                     </button>
@@ -173,14 +173,14 @@ export default function Notifications() {
                         {n.message || "No message"}
                       </p>
 
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs text-textLight mt-1">
                         {role} • {time}
                       </p>
                     </div>
 
                     <button
                       onClick={() => deleteNotification(n.id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-danger hover:text-dangerLight"
                     >
                       Delete
                     </button>
@@ -190,14 +190,14 @@ export default function Notifications() {
             </>
           )}
 
-          {/* EMPTY */}
+          
           {notifications.length === 0 && (
             <p className="text-gray-500">No notifications yet</p>
           )}
         </div>
       </div>
 
-      {/* 🔥 MODAL */}
+      
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
 
@@ -243,7 +243,7 @@ export default function Notifications() {
 
               <button
                 onClick={sendNotification}
-                className="px-4 py-2 bg-blue-600 text-white rounded"
+                className="px-4 py-2 bg-primary text-white rounded"
               >
                 Send
               </button>

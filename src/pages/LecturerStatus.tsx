@@ -18,25 +18,25 @@ export default function LecturerStatusPage() {
 
   const fetchData = async () => {
     const usersSnap = await getDocs(collection(db, "users"));
-    const statusSnap = await getDocs(collection(db, "lecturer_status"));
-
-    const statusMap: any = {};
-    statusSnap.docs.forEach((doc) => {
-      statusMap[doc.data().lecturerId] = doc.data().status;
-    });
 
     const lecturerList: LecturerStatus[] = usersSnap.docs
-      .map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as any),
-      }))
-      .filter((u: any) => u.role === "lecturer")
-      .map((lecturer: any) => ({
-        id: lecturer.id,
-        name: lecturer.name,
-        photo: lecturer.photo || lecturer.profileImage || "",
-        status: statusMap[lecturer.id] || "leave",
-      }));
+      .map((doc) => {
+        const data = doc.data() as any;
+
+        return {
+          id: doc.id,
+          name: data.name,
+          photo: data.photoUrl || data.photo || data.profileImage || "",
+          status: data.status || "leave",
+        };
+      })
+      .filter((u) => u.status && u.name && u.id)
+      .filter((u: any) => {
+        const role = usersSnap.docs
+          .find((d) => d.id === u.id)
+          ?.data().role;
+        return role === "lecturer";
+      });
 
     setLecturers(lecturerList);
   };
@@ -45,41 +45,22 @@ export default function LecturerStatusPage() {
     fetchData();
   }, []);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "available":
-        return "bg-green-500";
-      case "away":
-        return "bg-yellow-400";
-      case "leave":
-        return "bg-red-500";
-      default:
-        return "bg-gray-400";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "available":
-        return "Available";
-      case "away":
-        return "Away";
-      case "leave":
-        return "On Leave";
-      default:
-        return "Unknown";
-    }
+  const getColor = (status: string) => {
+    if (status === "available") return "green";
+    if (status === "away") return "orange";
+    if (status === "leave") return "danger";
+    return "gray";
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
 
-      {/* SIDEBAR */}
+      
       <div className="w-64 fixed h-full">
         <Sidebar />
       </div>
 
-      {/* CONTENT */}
+      
       <div className="flex-1 ml-64 p-6 overflow-y-auto bg-gray-100">
 
         <h1 className="text-2xl font-semibold mb-6">
@@ -96,7 +77,7 @@ export default function LecturerStatusPage() {
                 key={lec.id}
                 className="flex justify-between items-center border-b py-3"
               >
-                {/* 🔥 LEFT SIDE (PHOTO + NAME) */}
+                
                 <div className="flex items-center gap-3">
 
                   <img
@@ -115,16 +96,33 @@ export default function LecturerStatusPage() {
                   <p className="font-medium">{lec.name}</p>
                 </div>
 
-                {/* 🔥 STATUS */}
-                <div className="flex items-center gap-2">
+                
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+                  
                   <div
-                    className={`w-3 h-3 rounded-full ${getStatusColor(
-                      lec.status
-                    )}`}
+                    style={{
+                      width: 14,
+                      height: 14,
+                      borderRadius: "50%",
+                      backgroundColor: getColor(lec.status),
+                    }}
                   />
-                  <span className="text-sm">
-                    {getStatusText(lec.status)}
+
+                  
+                  <span
+                    style={{
+                      fontWeight: "semibold",
+                      color: getColor(lec.status),
+                    }}
+                  >
+                    {lec.status === "available"
+                      ? "Available"
+                      : lec.status === "away"
+                      ? "Away"
+                      : "On Leave"}
                   </span>
+
                 </div>
               </div>
             ))
