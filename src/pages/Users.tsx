@@ -1,13 +1,39 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
+
 import {
   collection,
   getDocs,
   deleteDoc,
   doc,
-  addDoc,
+  setDoc,
 } from "firebase/firestore";
+
 import { db } from "../firebase";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+
+import { initializeApp } from "firebase/app";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC5pNQ3qJFS1TWHqdfJbfomIYkq_5sE_Bc",
+  authDomain: "lecturerfinder.firebaseapp.com",
+  projectId: "lecturerfinder",
+  storageBucket: "lecturerfinder.firebasestorage.app",
+  messagingSenderId: "961608516651",
+  appId: "1:961608516651:web:831d71cd400ac26354566e"
+};
+
+const secondaryApp = initializeApp(
+  firebaseConfig,
+  "Secondary"
+);
+
+const secondaryAuth = getAuth(secondaryApp);
 
 interface User {
   id: string;
@@ -41,6 +67,7 @@ export default function Users() {
 
   const fetchUsers = async () => {
     const snapshot = await getDocs(collection(db, "users"));
+
     const list = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -53,17 +80,46 @@ export default function Users() {
     if (!selectedUser) return;
 
     await deleteDoc(doc(db, "users", selectedUser.id));
+
     setSelectedUser(null);
+
     fetchUsers();
   };
 
+  
   const createUser = async () => {
     try {
-      await addDoc(collection(db, "users"), newUser);
+
+      
+      const userCredential =
+        await createUserWithEmailAndPassword(
+          secondaryAuth,
+          newUser.email,
+          newUser.password
+        );
+
+      const uid = userCredential.user.uid;
+
+      
+      await setDoc(doc(db, "users", uid), {
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        faculty: newUser.faculty,
+        department: newUser.department,
+        university: newUser.university,
+        status: "available",
+      });
+
+      alert("User created successfully");
+
       setShowAddModal(false);
+
       fetchUsers();
-    } catch (e) {
-      alert("Error creating user");
+
+    } catch (e: any) {
+      console.log(e);
+      alert(e.message);
     }
   };
 
@@ -72,8 +128,11 @@ export default function Users() {
       <Sidebar />
 
       <div className="flex-1 p-6 bg-gray-100 min-h-screen">
+
         <div className="flex justify-between mb-6">
-          <h1 className="text-2xl font-semibold">Users</h1>
+          <h1 className="text-2xl font-semibold">
+            Users
+          </h1>
 
           <button
             onClick={() => setShowAddModal(true)}
@@ -85,7 +144,9 @@ export default function Users() {
 
         {/* TABLE */}
         <div className="bg-white rounded-xl shadow p-4">
+
           <table className="w-full">
+
             <thead>
               <tr className="border-b text-left">
                 <th className="p-2">Name</th>
@@ -96,13 +157,24 @@ export default function Users() {
             </thead>
 
             <tbody>
+
               {users.map((user) => (
                 <tr key={user.id} className="border-b">
-                  <td className="p-2">{user.name}</td>
-                  <td className="p-2">{user.email}</td>
-                  <td className="p-2 capitalize">{user.role}</td>
+
+                  <td className="p-2">
+                    {user.name}
+                  </td>
+
+                  <td className="p-2">
+                    {user.email}
+                  </td>
+
+                  <td className="p-2 capitalize">
+                    {user.role}
+                  </td>
+
                   <td className="p-2 flex gap-2">
-                    
+
                     {/* VIEW */}
                     <button
                       onClick={() => setViewUser(user)}
@@ -122,82 +194,116 @@ export default function Users() {
                   </td>
                 </tr>
               ))}
+
             </tbody>
           </table>
         </div>
 
-        {/* 🔥 ADD USER MODAL */}
+        {/* ADD USER MODAL */}
         {showAddModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+
             <div className="bg-white p-6 rounded-2xl w-96 shadow-xl">
 
-              <h2 className="text-lg font-semibold mb-4">Add User</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                Add User
+              </h2>
 
               <div className="space-y-3">
 
                 <input
                   placeholder="Name"
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, name: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      name: e.target.value,
+                    })
                   }
                 />
 
                 <input
                   placeholder="Email"
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, email: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      email: e.target.value,
+                    })
                   }
                 />
 
                 <input
                   type="password"
                   placeholder="Password"
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, password: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      password: e.target.value,
+                    })
                   }
                 />
 
                 <select
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, role: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      role: e.target.value,
+                    })
                   }
                 >
-                  <option value="student">Student</option>
-                  <option value="lecturer">Lecturer</option>
-                  <option value="admin">Admin</option>
+                  <option value="student">
+                    Student
+                  </option>
+
+                  <option value="lecturer">
+                    Lecturer
+                  </option>
+
+                  <option value="admin">
+                    Admin
+                  </option>
                 </select>
 
                 <input
                   placeholder="Faculty"
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, faculty: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      faculty: e.target.value,
+                    })
                   }
                 />
 
                 <input
                   placeholder="Department"
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, department: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      department: e.target.value,
+                    })
                   }
                 />
 
                 <input
                   placeholder="University"
-                  className="w-full p-3 border rounded-lg"
+                  className="w-full p-3 border-2 border-primary-600 rounded-lg focus:outline-none focus:border-primary"
                   onChange={(e) =>
-                    setNewUser({ ...newUser, university: e.target.value })
+                    setNewUser({
+                      ...newUser,
+                      university: e.target.value,
+                    })
                   }
                 />
 
               </div>
 
               <div className="flex justify-end gap-3 mt-6">
+
                 <button
                   onClick={() => setShowAddModal(false)}
                   className="px-4 py-2 bg-gray-300 rounded"
@@ -211,15 +317,17 @@ export default function Users() {
                 >
                   Add
                 </button>
+
               </div>
 
             </div>
           </div>
         )}
 
-        {/* 🔥 VIEW USER MODAL */}
+        {/* VIEW USER MODAL */}
         {viewUser && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+
             <div className="bg-white p-6 rounded-xl w-96 shadow-lg">
 
               <h2 className="text-lg font-semibold mb-4">
@@ -238,12 +346,14 @@ export default function Users() {
               </div>
 
               <div className="flex justify-end mt-4">
+
                 <button
                   onClick={() => setViewUser(null)}
                   className="px-4 py-2 bg-primary text-white rounded"
                 >
                   Close
                 </button>
+
               </div>
 
             </div>
@@ -253,7 +363,9 @@ export default function Users() {
         {/* DELETE MODAL */}
         {selectedUser && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+
             <div className="bg-white p-6 rounded-xl shadow w-80">
+
               <h2 className="text-lg font-semibold mb-3">
                 Confirm Delete
               </h2>
@@ -263,6 +375,7 @@ export default function Users() {
               </p>
 
               <div className="flex justify-end gap-3">
+
                 <button
                   onClick={() => setSelectedUser(null)}
                   className="px-4 py-2 bg-gray-300 rounded"
@@ -276,7 +389,9 @@ export default function Users() {
                 >
                   Delete
                 </button>
+
               </div>
+
             </div>
           </div>
         )}
