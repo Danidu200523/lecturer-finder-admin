@@ -147,10 +147,12 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex">
-      <Sidebar />
+    <div className="flex h-screen overflow-hidden">
+       <div className="fixed left-0 top-0 h-screen">
+    <Sidebar />
+  </div>
 
-      <div className="flex-1 p-6 bg-gray-100 min-h-screen">
+      <div className="flex-1 ml-64 p-6 bg-gray-100 h-screen overflow-y-auto">
 
         <h1 className="text-2xl font-bold mb-6 text-gray-800">
           Dashboard Overview 🚀
